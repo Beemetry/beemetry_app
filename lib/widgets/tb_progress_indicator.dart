@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/constants/colors.dart';
 
 class TbProgressIndicator extends ProgressIndicator {
   final double size;
@@ -90,7 +91,7 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
           width: widget.size,
           height: widget.size,
           child: CircularProgressIndicator(
-            color: Color.fromRGBO(8, 100, 167, 1),
+            color: AppColors.primary,
           ));
     } else {
       return Stack(
@@ -98,13 +99,13 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
           SvgPicture.asset(ThingsboardImage.thingsboardCenter,
               height: widget.size,
               width: widget.size,
-              color: Color.fromRGBO(8, 100, 167, 1)),
+              color: AppColors.primary),
           AnimatedBuilder(
             animation: _rotation!,
             child: SvgPicture.asset(ThingsboardImage.thingsboardOuter,
                 height: widget.size,
                 width: widget.size,
-                color: Color.fromRGBO(8, 100, 167, 1)),
+                color: AppColors.primary),
             builder: (BuildContext context, Widget? child) {
               return Transform.rotate(
                   angle: _rotation!.value * pi * 2, child: child);
