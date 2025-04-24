@@ -114,7 +114,7 @@ class Dashboard extends TbContextWidget {
   _DashboardState createState() => _DashboardState();
 }
 
-class _DashboardState extends TbContextState<Dashboard> {
+class _DashboardState extends TbContextState<Dashboard> with WidgetsBindingObserver {
   final Completer<InAppWebViewController> _controller =
       Completer<InAppWebViewController>();
 
@@ -147,6 +147,7 @@ class _DashboardState extends TbContextState<Dashboard> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     dashboardActive.value = widget._activeByDefault;
     _dashboardController = DashboardController(this);
     if (widget._controllerCallback != null) {
@@ -199,11 +200,20 @@ class _DashboardState extends TbContextState<Dashboard> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     tbContext.isAuthenticatedListenable.removeListener(_onAuthenticated);
     readyState.dispose();
     dashboardLoading.dispose();
     _dashboardController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && readyState.value) {
+      dashboardLoading.value = true;
+      _controller.future.then((ctrl) => ctrl.reload());
+    }
   }
 
   Future<void> _activateDashboard() async {
